@@ -23,5 +23,5 @@ public class TokenConstant {
 	/**
 	 * User信息 认证请求头
 	 */
-	public static final String TOKEN_HEADER_KEY = "Access-Token";
+	public static final String TOKEN_HEADER_KEY = "token";
 }
