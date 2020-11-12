@@ -1,0 +1,77 @@
+server:
+  tomcat:
+    accept-count: 2000
+    max-connections: 20000
+    threads:
+      min-spare: 10
+      max: 200
+  port: 8282
+spring:
+  application:
+    name: performance-appraisal-api
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    druid:
+      url: jdbc:mysql://111.67.195.178:3306/db_performance_appraisal?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true
+      username: root
+      password: mhylSG***1175
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 6000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat,wall,slf4j
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+logging:
+  level:
+    com:
+      mhyl: debug
+    org:
+      springframework:
+        web: debug
+        scheduling: debug
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: is_delete
+      logic-delete-value: 'Y'
+      logic-not-delete-value: 'N'
+mhyl:
+  .auth:
+    whiteUrls:
+      - /actuator/**
+      - /doc.html
+      - /webjars/**
+      - /swagger-resources/**
+      - /favicon.ico
+      - /login
