@@ -115,9 +115,9 @@ public class CodeGenerator {
         } else {
             strategy.setExclude("flyway_schema_history");
         }
-        strategy.setLogicDeleteFieldName("is_delete");
+        strategy.setLogicDeleteFieldName("deleted");
         List<TableFill> tableFillList = new ArrayList<>();
-        tableFillList.add(new TableFill("is_delete", FieldFill.INSERT));
+        tableFillList.add(new TableFill("deleted", FieldFill.INSERT));
         tableFillList.add(new TableFill("create_time", FieldFill.INSERT));
         tableFillList.add(new TableFill("update_time", FieldFill.UPDATE));
         strategy.setTableFillList(tableFillList);
