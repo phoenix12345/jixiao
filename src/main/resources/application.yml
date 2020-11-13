@@ -13,7 +13,7 @@ spring:
     allow-bean-definition-overriding: true
   datasource:
     druid:
-      url: jdbc:mysql://111.67.195.178:3306/db_performance_appraisal?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true
+      url: jdbc:mysql://10.16.13.213:3306/db_performance_appraisal?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true
       username: root
       password: mhylSG***1175
       driver-class-name: com.mysql.cj.jdbc.Driver
