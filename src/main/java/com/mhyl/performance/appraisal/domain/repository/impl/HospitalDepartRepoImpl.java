@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
  * 科室 服务实现类
  * </p>
  *
- * @author Archie Ding
- * @since 2020-11-12
+ * @author Berger Lan
+ * @since 2020-11-13
  */
 @Service
 public class HospitalDepartRepoImpl extends ServiceImpl<HospitalDepartMapper, HospitalDepart> implements HospitalDepartRepo {

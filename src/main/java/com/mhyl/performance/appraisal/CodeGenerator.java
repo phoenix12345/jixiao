@@ -35,7 +35,7 @@ public class CodeGenerator {
 
         gc.setOutputDir(projectPath + "/src/main/java");
         gc.setFileOverride(true);
-        gc.setAuthor("Archie Ding");
+        gc.setAuthor("Berger Lan");
         gc.setOpen(false);
         // 是否开启二级缓存
         gc.setEnableCache(false);

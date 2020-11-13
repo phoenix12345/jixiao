@@ -17,8 +17,8 @@ import lombok.EqualsAndHashCode;
  * 科室
  * </p>
  *
- * @author Archie Ding
- * @since 2020-11-12
+ * @author Berger Lan
+ * @since 2020-11-13
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

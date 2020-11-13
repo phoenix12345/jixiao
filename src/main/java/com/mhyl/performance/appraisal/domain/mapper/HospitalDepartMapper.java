@@ -8,8 +8,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * 科室 Mapper 接口
  * </p>
  *
- * @author Archie Ding
- * @since 2020-11-12
+ * @author Berger Lan
+ * @since 2020-11-13
  */
 public interface HospitalDepartMapper extends BaseMapper<HospitalDepart> {
 

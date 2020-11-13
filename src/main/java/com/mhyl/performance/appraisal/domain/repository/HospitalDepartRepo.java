@@ -8,8 +8,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * 科室 服务类
  * </p>
  *
- * @author Archie Ding
- * @since 2020-11-12
+ * @author Berger Lan
+ * @since 2020-11-13
  */
 public interface HospitalDepartRepo extends IService<HospitalDepart> {
 
