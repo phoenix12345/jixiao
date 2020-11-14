@@ -26,6 +26,13 @@ public class ServiceProjectController {
     @PostMapping("/save")
     public JsonResult save(@RequestBody ServiceProjectDTO dto){
         ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getName(), "服务名称");
+        QueryWrapper<ServiceProject> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("name");
+        queryWrapper.eq("name",dto.getName());
+        List<ServiceProject> list = serviceProjectRepo.list(queryWrapper);
+        if (list.size() > 0){
+            return JsonResult.error(500,"与已有服务项目名称重复，请复核");
+        }
         ServiceProject serviceProject = BeanMapper.map(dto, ServiceProject.class);
         serviceProjectRepo.save(serviceProject);
         return JsonResult.success("success");
@@ -34,8 +41,15 @@ public class ServiceProjectController {
     //修改服务项目
     @ApiOperation("修改服务项目")
     @PostMapping("/update")
-    public JsonResult update(@RequestBody ServiceProjectDTO dto) {
+    public JsonResult<String> update(@RequestBody ServiceProjectDTO dto) {
         ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getAppraisalId(), "服务项目id");
+        QueryWrapper<ServiceProject> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("name");
+        queryWrapper.eq("name",dto.getName());
+        List<ServiceProject> list = serviceProjectRepo.list(queryWrapper);
+        if (list.size() > 0){
+            return JsonResult.error(500,"与已有服务项目名称重复，请复核");
+        }
         ServiceProject serviceProject = BeanMapper.map(dto, ServiceProject.class);
         serviceProjectRepo.updateById(serviceProject);
         return JsonResult.success("success");

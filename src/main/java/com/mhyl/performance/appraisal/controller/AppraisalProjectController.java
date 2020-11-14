@@ -28,6 +28,13 @@ public class AppraisalProjectController {
     @PostMapping("/save")
     public JsonResult save(@RequestBody AppraisalProjectDTO dto){
         ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getName(), "项目名称");
+        QueryWrapper<AppraisalProject> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("name");
+        queryWrapper.eq("name",dto.getName());
+        List<AppraisalProject> list = appraisalProjectRepo.list(queryWrapper);
+        if (list.size() > 0){
+            return JsonResult.error(500,"存在重复的项目名称：" + list.get(0).getName());
+        }
         AppraisalProject appraisalProject = BeanMapper.map(dto, AppraisalProject.class);
         appraisalProjectRepo.save(appraisalProject);
         return JsonResult.success("success");
@@ -35,7 +42,7 @@ public class AppraisalProjectController {
 
     @ApiOperation("绩效考核列表")
     @PostMapping("/getList")
-    public JsonResult getList(){
+    public JsonResult<List<AppraisalProjectVO>> getList(){
         QueryWrapper<AppraisalProject> appraisalProjectQueryWrapper = new QueryWrapper<>();
         appraisalProjectQueryWrapper.select("id,name,create_time,update_time");
         List<AppraisalProject> list = appraisalProjectRepo.list(appraisalProjectQueryWrapper);
