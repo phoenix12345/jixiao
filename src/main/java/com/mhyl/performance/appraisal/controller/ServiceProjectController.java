@@ -24,7 +24,7 @@ public class ServiceProjectController {
     //添加服务项目到考核项目
     @ApiOperation("添加服务项目到考核项目")
     @PostMapping("/save")
-    public JsonResult insert(@RequestBody ServiceProjectDTO dto){
+    public JsonResult save(@RequestBody ServiceProjectDTO dto){
         ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getName(), "服务名称");
         ServiceProject serviceProject = BeanMapper.map(dto, ServiceProject.class);
         serviceProjectRepo.save(serviceProject);

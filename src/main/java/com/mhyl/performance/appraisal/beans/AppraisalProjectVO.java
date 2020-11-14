@@ -10,12 +10,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
  * <p>
- * 医生
+ * 考核项目
  * </p>
  *
  * @author Archie Ding
@@ -23,8 +22,8 @@ import java.time.LocalDateTime;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="HospitalDoctor对象", description="医生")
-public class HospitalDoctorDTO implements Serializable {
+@ApiModel(value="AppraisalProject对象", description="考核项目")
+public class AppraisalProjectVO implements Serializable {
 
     private static final long serialVersionUID=1L;
 
@@ -32,22 +31,16 @@ public class HospitalDoctorDTO implements Serializable {
       @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value = "姓名")
+    @ApiModelProperty(value = "项目名称")
     private String name;
 
-    @ApiModelProperty(value = "身份证")
-    private String idCard;
+    @ApiModelProperty(value = "创建时间")
+      @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
 
-    @ApiModelProperty(value = "职称")
-    private String jobTitle;
+    @ApiModelProperty(value = "修改时间")
+      @TableField(fill = FieldFill.UPDATE)
+    private LocalDateTime updateTime;
 
-    @ApiModelProperty(value = "职务")
-    private String jobPost;
-
-    @ApiModelProperty(value = "所在科室")
-    private Long departId;
-
-    @ApiModelProperty(value = "备注")
-    private String remark;
 
 }

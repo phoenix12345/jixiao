@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 医生
+ * 收费项目
  * </p>
  *
  * @author Archie Ding
@@ -23,8 +23,8 @@ import java.time.LocalDateTime;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="HospitalDoctor对象", description="医生")
-public class HospitalDoctorDTO implements Serializable {
+@ApiModel(value="ChargeProject对象", description="收费项目")
+public class ChargeProjectVO implements Serializable {
 
     private static final long serialVersionUID=1L;
 
@@ -32,20 +32,8 @@ public class HospitalDoctorDTO implements Serializable {
       @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value = "姓名")
+    @ApiModelProperty(value = "收费项目名称")
     private String name;
-
-    @ApiModelProperty(value = "身份证")
-    private String idCard;
-
-    @ApiModelProperty(value = "职称")
-    private String jobTitle;
-
-    @ApiModelProperty(value = "职务")
-    private String jobPost;
-
-    @ApiModelProperty(value = "所在科室")
-    private Long departId;
 
     @ApiModelProperty(value = "备注")
     private String remark;
