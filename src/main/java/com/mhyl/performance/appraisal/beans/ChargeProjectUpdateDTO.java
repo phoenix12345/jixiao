@@ -3,8 +3,6 @@ package com.mhyl.performance.appraisal.beans;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.math.BigDecimal;
-
 /**
  * <p>
  * 收费项目
@@ -14,7 +12,7 @@ import java.math.BigDecimal;
  * @since 2020-11-12
  */
 @Data
-public class ChargeProjectVO {
+public class ChargeProjectUpdateDTO {
 
     @ApiModelProperty(value = "主键")
     private Long id;
@@ -25,12 +23,4 @@ public class ChargeProjectVO {
     @ApiModelProperty(value = "备注")
     private String remark;
 
-    @ApiModelProperty(value = "医疗")
-    private BigDecimal medicalCare;
-
-    @ApiModelProperty(value = "护理")
-    private BigDecimal nursing;
-
-    @ApiModelProperty(value = "执行科室")
-    private BigDecimal executiveDepart;
 }

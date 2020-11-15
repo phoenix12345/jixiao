@@ -46,8 +46,15 @@ public enum ThrowException implements ServiceExceptionAssert {
 	 * 用户名或者密码错误，请检查您的用户名与密码，注意标点符号与大小写
 	 */
 	PASSWORD_NOT_VALIDATE(601, "用户名或者密码错误，请检查您的用户名与密码，注意标点符号与大小写"),
+	/**
+	 * 与其他科室名称重复，请重新输入
+	 */
+	DEPART_DUPLICATE(602, "与其他科室名称重复，请重新输入"),
+	/**
+	 * 收费项目名称与已有名称重复，请复核
+	 */
+	CHARGE_DUPLICATE(603, "收费项目名称与已有名称重复，请复核"),
 	;
-
 	/**
 	 * 返回码
 	 */

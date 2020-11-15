@@ -1,17 +1,10 @@
 package com.mhyl.performance.appraisal.beans;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import java.io.Serializable;
+
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -22,19 +15,16 @@ import java.time.LocalDateTime;
  * @since 2020-11-12
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
-@ApiModel(value="HospitalDoctor对象", description="医生")
-public class HospitalDoctorExcel implements Serializable {
-
-    private static final long serialVersionUID=1L;
-
+public class HospitalDoctorExcel {
     @ApiModelProperty(value = "主键")
-    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     @Excel(name = "*姓名")
     @ApiModelProperty(value = "姓名")
     private String name;
+
+    @ApiModelProperty(value = "0: 职务+职称 1:职务 2:职称 3:无")
+    private Integer sorted;
 
     @Excel(name = "*身份证号码")
     @ApiModelProperty(value = "身份证")
@@ -63,15 +53,8 @@ public class HospitalDoctorExcel implements Serializable {
     private BigDecimal departRate;
 
     @ApiModelProperty(value = "创建时间")
-      @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    private Long createTime;
 
     @ApiModelProperty(value = "修改时间")
-      @TableField(fill = FieldFill.UPDATE)
-    private LocalDateTime updateTime;
-
-    @ApiModelProperty(value = "0: 职务+职称 1:职务 2:职称 3:无")
-    private Integer sorted;
-
-
+    private Long updateTime;
 }

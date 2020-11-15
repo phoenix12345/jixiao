@@ -1,15 +1,15 @@
 package com.mhyl.performance.appraisal.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -21,13 +21,13 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="SystemUser对象", description="用户")
+@ApiModel(value = "SystemUser对象", description = "用户")
 public class SystemUser implements Serializable {
 
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "主键")
-      @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     @ApiModelProperty(value = "姓名")
@@ -49,12 +49,12 @@ public class SystemUser implements Serializable {
     private String remark;
 
     @ApiModelProperty(value = "创建时间")
-      @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    @TableField(fill = FieldFill.INSERT)
+    private Long createTime;
 
     @ApiModelProperty(value = "修改时间")
-      @TableField(fill = FieldFill.UPDATE)
-    private LocalDateTime updateTime;
+    @TableField(fill = FieldFill.UPDATE)
+    private Long updateTime;
 
 
 }

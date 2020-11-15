@@ -20,7 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -60,7 +60,6 @@ public class HospitalDoctorController {
         if (one != null){
             return JsonResult.error(500,"重复人员名称：" + one.getName());
         }
-        hospitalDoctor.setCreateTime(LocalDateTime.now());
         hospitalDoctor.setSorted(0);
         if (dto.getJobPost().equals("无") && dto.getJobTitle().equals("无")){
             hospitalDoctor.setSorted(3);
@@ -96,7 +95,6 @@ public class HospitalDoctorController {
         if (one != null){
             return JsonResult.error(500,"重复人员名称：" + one.getName());
         }
-        hospitalDoctor.setCreateTime(LocalDateTime.now());
         hospitalDoctor.setSorted(0);
         if (dto.getJobPost().equals("无") && dto.getJobTitle().equals("无")){
             hospitalDoctor.setSorted(3);
@@ -136,7 +134,6 @@ public class HospitalDoctorController {
         List<HospitalDoctorExcel> result = ExcelImportUtil.importExcel(multipartFile.getInputStream(),HospitalDoctorExcel.class, params);
         //得到excel表格中所在科室字段
         for (HospitalDoctorExcel hospitalDoctorExcel : result) {
-            hospitalDoctorExcel.setCreateTime(LocalDateTime.now());
             ThrowException.ARG_IS_EMPTY.ifEmpty(hospitalDoctorExcel.getDepartId(), "所在科室");
             ThrowException.ARG_IS_EMPTY.ifEmpty(hospitalDoctorExcel.getIdCard(), "身份证号码");
             ThrowException.ARG_IS_EMPTY.ifEmpty(hospitalDoctorExcel.getName(), "姓名");

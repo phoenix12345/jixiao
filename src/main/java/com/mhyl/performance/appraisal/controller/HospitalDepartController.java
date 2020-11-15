@@ -1,8 +1,9 @@
 package com.mhyl.performance.appraisal.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.mhyl.performance.appraisal.beans.HospitalDepartDTO;
+import com.mhyl.performance.appraisal.beans.HospitalDepartRateDTO;
 import com.mhyl.performance.appraisal.beans.HospitalDepartSaveDTO;
+import com.mhyl.performance.appraisal.beans.HospitalDepartUpdateDTO;
 import com.mhyl.performance.appraisal.beans.HospitalDepartVO;
 import com.mhyl.performance.appraisal.domain.entity.HospitalDepart;
 import com.mhyl.performance.appraisal.domain.entity.HospitalDoctor;
@@ -30,31 +31,38 @@ public class HospitalDepartController {
 
     @ApiOperation("增加科室")
     @PostMapping("/save")
-    public JsonResult save(@RequestBody HospitalDepartSaveDTO dto){
+    public JsonResult save(@RequestBody HospitalDepartSaveDTO dto) {
         ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getName(), "科室名称");
-        QueryWrapper<HospitalDepart> hospitalDepartQueryWrapper = new QueryWrapper<>();
-        hospitalDepartQueryWrapper.select("id,name,create_time");
-        hospitalDepartQueryWrapper.eq("name",dto.getName());
-        List<HospitalDepart> list = hospitalDepartRepo.list(hospitalDepartQueryWrapper);
-        if (list.size() > 0){
-            return JsonResult.error(500,"与其他科室名称重复，请重新输入");
-        }
+        checkDepartName(dto.getName());
         HospitalDepart hospitalDepart = BeanMapper.map(dto, HospitalDepart.class);
         hospitalDepartRepo.save(hospitalDepart);
         return JsonResult.success("success");
     }
 
+    private void checkDepartName(String name) {
+        QueryWrapper<HospitalDepart> wrapper = new QueryWrapper<>();
+        wrapper.eq("name", name);
+        int count = hospitalDepartRepo.count(wrapper);
+        ThrowException.DEPART_DUPLICATE.ifNotEquals(count, 0);
+    }
+
     @ApiOperation("修改科室")
     @PostMapping("/update")
-    public JsonResult update(@RequestBody HospitalDepartDTO dto){
+    public JsonResult update(@RequestBody HospitalDepartUpdateDTO dto) {
         ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getId(), "科室id");
-        QueryWrapper<HospitalDepart> hospitalDepartQueryWrapper = new QueryWrapper<>();
-        hospitalDepartQueryWrapper.select("name");
-        hospitalDepartQueryWrapper.eq("name",dto.getName());
-        List list = hospitalDepartRepo.list(hospitalDepartQueryWrapper);
-        if (list.size() > 0){
-            return JsonResult.error(500,"与其他科室名称重复，请重新输入");
-        }
+        ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getName(), "科室名称");
+        checkDepartName(dto.getName());
+        HospitalDepart hospitalDepart = BeanMapper.map(dto, HospitalDepart.class);
+        hospitalDepartRepo.updateById(hospitalDepart);
+        return JsonResult.success();
+    }
+
+    @ApiOperation("修改科室系数")
+    @PostMapping("/updateRate")
+    public JsonResult updateRate(@RequestBody HospitalDepartRateDTO dto) {
+        ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getId(), "科室id");
+        ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getJobPostRate(), "岗位系数总量");
+        ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getDepartRate(), "科室系数总量");
         HospitalDepart hospitalDepart = BeanMapper.map(dto, HospitalDepart.class);
         hospitalDepartRepo.updateById(hospitalDepart);
         return JsonResult.success();
@@ -62,33 +70,20 @@ public class HospitalDepartController {
 
     @ApiOperation("删除科室")
     @GetMapping("/delete")
-    public JsonResult delete(@RequestParam String id){
+    public JsonResult delete(@RequestParam String id) {
         //删除该科室内的所有员工
         QueryWrapper<HospitalDoctor> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id");
-        queryWrapper.in("depart_id",id);
+        queryWrapper.eq("depart_id", id);
         hospitalDoctorRepo.remove(queryWrapper);
         //删除科室
         hospitalDepartRepo.removeById(id);
         return JsonResult.success();
     }
 
-    @ApiOperation("根据科室名称查询科室信息")
-    @GetMapping("/getByName")
-    public JsonResult<Integer> getByName(@RequestParam String name){
-        QueryWrapper<HospitalDepart> hospitalDepartQueryWrapper = new QueryWrapper<>();
-        hospitalDepartQueryWrapper.select("id,name,create_time");
-        hospitalDepartQueryWrapper.eq("name",name);
-        List<HospitalDepart> list = hospitalDepartRepo.list(hospitalDepartQueryWrapper);
-        return JsonResult.success(list.size());
-    }
-
     @ApiOperation("科室列表")
-    @PostMapping("/getList")
-    public JsonResult<List<HospitalDepartVO>> getList(){
-        QueryWrapper<HospitalDepart> hospitalDepartQueryWrapper = new QueryWrapper<>();
-        hospitalDepartQueryWrapper.select("id,name,job_post_rate,depart_rate,create_time,update_time");
-        List<HospitalDepart> list = hospitalDepartRepo.list(hospitalDepartQueryWrapper);
+    @PostMapping("/list")
+    public JsonResult<List<HospitalDepartVO>> list() {
+        List<HospitalDepart> list = hospitalDepartRepo.list();
         List<HospitalDepartVO> data = BeanMapper.mapList(list, HospitalDepart.class, HospitalDepartVO.class);
         return JsonResult.success(data);
     }

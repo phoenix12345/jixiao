@@ -1,16 +1,16 @@
 package com.mhyl.performance.appraisal.domain.entity;
 
-import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * <p>
@@ -22,17 +22,20 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="HospitalDoctor对象", description="医生")
+@ApiModel(value = "HospitalDoctor对象", description = "医生")
 public class HospitalDoctor implements Serializable {
 
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "主键")
-      @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     @ApiModelProperty(value = "姓名")
     private String name;
+
+    @ApiModelProperty(value = "0: 职务+职称 1:职务 2:职称 3:无")
+    private Integer sorted;
 
     @ApiModelProperty(value = "身份证")
     private String idCard;
@@ -56,15 +59,10 @@ public class HospitalDoctor implements Serializable {
     private BigDecimal departRate;
 
     @ApiModelProperty(value = "创建时间")
-      @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    @TableField(fill = FieldFill.INSERT)
+    private Long createTime;
 
     @ApiModelProperty(value = "修改时间")
-      @TableField(fill = FieldFill.UPDATE)
-    private LocalDateTime updateTime;
-
-    @ApiModelProperty(value = "0: 职务+职称 1:职务 2:职称 3:无")
-    private Integer sorted;
-
-
+    @TableField(fill = FieldFill.UPDATE)
+    private Long updateTime;
 }
