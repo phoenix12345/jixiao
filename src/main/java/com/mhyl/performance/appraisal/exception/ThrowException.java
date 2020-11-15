@@ -54,6 +54,18 @@ public enum ThrowException implements ServiceExceptionAssert {
 	 * 收费项目名称与已有名称重复，请复核
 	 */
 	CHARGE_DUPLICATE(603, "收费项目名称与已有名称重复，请复核"),
+	/**
+	 * 与已有服务项目名称重复，请复核
+	 */
+	SERVICE_DUPLICATE(604, "与已有服务项目名称重复，请复核"),
+	/**
+	 * 身份证号码与已有员工重复，请更改后提交
+	 */
+	DOCTOR_DUPLICATE(605, "重复人员名称: {0}"),
+	/**
+	 * 身份证号码与已有员工重复，请更改后提交
+	 */
+	DOCTOR_NAME_DUPLICATE(606, "身份证号码与已有员工重复，请更改后提交"),
 	;
 	/**
 	 * 返回码

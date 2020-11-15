@@ -1,7 +1,8 @@
 package com.mhyl.performance.appraisal.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.mhyl.performance.appraisal.beans.ServiceProjectDTO;
+import com.mhyl.performance.appraisal.beans.ServiceProjectSaveDTO;
+import com.mhyl.performance.appraisal.beans.ServiceProjectUpdateDTO;
 import com.mhyl.performance.appraisal.beans.ServiceProjectVO;
 import com.mhyl.performance.appraisal.domain.entity.ServiceProject;
 import com.mhyl.performance.appraisal.domain.repository.ServiceProjectRepo;
@@ -12,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @Api(tags = "服务项目")
@@ -21,47 +23,44 @@ public class ServiceProjectController {
     @Autowired
     private ServiceProjectRepo serviceProjectRepo;
 
-    //添加服务项目到考核项目
     @ApiOperation("添加服务项目到考核项目")
     @PostMapping("/save")
-    public JsonResult save(@RequestBody ServiceProjectDTO dto){
+    public JsonResult save(@RequestBody ServiceProjectSaveDTO dto) {
+        ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getAppraisalId(), "所属项目id");
         ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getName(), "服务名称");
-        QueryWrapper<ServiceProject> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("name");
-        queryWrapper.eq("name",dto.getName());
-        List<ServiceProject> list = serviceProjectRepo.list(queryWrapper);
-        if (list.size() > 0){
-            return JsonResult.error(500,"与已有服务项目名称重复，请复核");
-        }
+        ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getUnit(), "服务单位");
+        checkServiceName(dto.getAppraisalId(), dto.getName());
         ServiceProject serviceProject = BeanMapper.map(dto, ServiceProject.class);
         serviceProjectRepo.save(serviceProject);
         return JsonResult.success("success");
     }
 
-    //修改服务项目
+    private void checkServiceName(Long appraisalId, String name) {
+        QueryWrapper<ServiceProject> wrapper = new QueryWrapper<>();
+        wrapper.eq("appraisal_id", appraisalId);
+        wrapper.eq("name", name);
+        int count = serviceProjectRepo.count(wrapper);
+        ThrowException.SERVICE_DUPLICATE.ifNotEquals(count, 0);
+    }
+
     @ApiOperation("修改服务项目")
     @PostMapping("/update")
-    public JsonResult<String> update(@RequestBody ServiceProjectDTO dto) {
-        ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getAppraisalId(), "服务项目id");
-        QueryWrapper<ServiceProject> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("name");
-        queryWrapper.eq("name",dto.getName());
-        List<ServiceProject> list = serviceProjectRepo.list(queryWrapper);
-        if (list.size() > 0){
-            return JsonResult.error(500,"与已有服务项目名称重复，请复核");
-        }
+    public JsonResult<String> update(@RequestBody ServiceProjectUpdateDTO dto) {
+        ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getId(), "项目id");
+        ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getAppraisalId(), "所属项目id");
+        ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getName(), "服务名称");
+        ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getUnit(), "服务单位");
+        checkServiceName(dto.getAppraisalId(), dto.getName());
         ServiceProject serviceProject = BeanMapper.map(dto, ServiceProject.class);
         serviceProjectRepo.updateById(serviceProject);
         return JsonResult.success("success");
     }
 
-    //获取某考核项目下的服务项目列表
-
     @ApiOperation("获取当前考核项目下的服务项目列表")
-    @GetMapping("/getList")
-    public JsonResult<List<ServiceProjectVO>> getList(@RequestParam Long appraisalId){
-        QueryWrapper<ServiceProject> wrapper = new QueryWrapper<>();
+    @GetMapping("/list")
+    public JsonResult<List<ServiceProjectVO>> list(@RequestParam Long appraisalId) {
         ThrowException.ARG_IS_EMPTY.ifEmpty(appraisalId, "考核项目id");
+        QueryWrapper<ServiceProject> wrapper = new QueryWrapper<>();
         wrapper.eq("appraisal_id", appraisalId);
         List<ServiceProject> list = serviceProjectRepo.list(wrapper);
         List<ServiceProjectVO> data = BeanMapper.mapList(list, ServiceProject.class, ServiceProjectVO.class);

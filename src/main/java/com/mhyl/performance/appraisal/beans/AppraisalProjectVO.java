@@ -22,7 +22,4 @@ public class AppraisalProjectVO {
 
     @ApiModelProperty(value = "项目序号")
     private Integer sorted;
-
-    @ApiModelProperty(value = "创建时间")
-    private Long createTime;
 }

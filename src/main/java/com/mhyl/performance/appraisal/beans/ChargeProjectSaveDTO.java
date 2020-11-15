@@ -13,13 +13,9 @@ import lombok.Data;
  */
 @Data
 public class ChargeProjectSaveDTO {
-    @ApiModelProperty(value = "主键")
-    private Long id;
-
     @ApiModelProperty(value = "收费项目名称")
     private String name;
 
     @ApiModelProperty(value = "备注")
     private String remark;
-
 }
