@@ -14,21 +14,14 @@ import java.math.BigDecimal;
  * @since 2020-11-13
  */
 @Data
-public class HospitalDepartVO {
+public class HospitalDepartRateDTO {
 
     @ApiModelProperty(value = "ID")
     private Long id;
-
-    @ApiModelProperty(value = "科室名称")
-    private String name;
 
     @ApiModelProperty(value = "岗位系数总量")
     private BigDecimal jobPostRate;
 
     @ApiModelProperty(value = "科室系数总量")
     private BigDecimal departRate;
-
-    @ApiModelProperty(value = "创建时间")
-    private Long createTime;
-
 }

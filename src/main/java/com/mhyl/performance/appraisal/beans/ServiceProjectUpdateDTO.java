@@ -4,7 +4,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-public class ServiceProjectDTO {
+public class ServiceProjectUpdateDTO {
+    @ApiModelProperty(value = "主键")
+    private Long id;
 
     @ApiModelProperty(value = "所属项目")
     private Long appraisalId;
@@ -17,5 +19,4 @@ public class ServiceProjectDTO {
 
     @ApiModelProperty(value = "备注")
     private String remark;
-
 }

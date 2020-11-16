@@ -12,7 +12,10 @@ import lombok.Data;
  * @since 2020-11-13
  */
 @Data
-public class HospitalDepartSaveDTO {
+public class HospitalDepartUpdateDTO {
+
+    @ApiModelProperty(value = "ID")
+    private Long id;
 
     @ApiModelProperty(value = "科室名称")
     private String name;

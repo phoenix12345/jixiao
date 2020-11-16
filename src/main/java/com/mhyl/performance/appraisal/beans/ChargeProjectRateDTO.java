@@ -14,16 +14,10 @@ import java.math.BigDecimal;
  * @since 2020-11-12
  */
 @Data
-public class ChargeProjectVO {
+public class ChargeProjectRateDTO {
 
     @ApiModelProperty(value = "主键")
     private Long id;
-
-    @ApiModelProperty(value = "收费项目名称")
-    private String name;
-
-    @ApiModelProperty(value = "备注")
-    private String remark;
 
     @ApiModelProperty(value = "医疗")
     private BigDecimal medicalCare;

@@ -5,18 +5,17 @@ import lombok.Data;
 
 /**
  * <p>
- * 考核项目
+ * 收费项目
  * </p>
  *
  * @author Archie Ding
  * @since 2020-11-12
  */
 @Data
-public class AppraisalProjectDTO {
-
-    @ApiModelProperty(value = "项目名称")
+public class ChargeProjectSaveDTO {
+    @ApiModelProperty(value = "收费项目名称")
     private String name;
 
-    @ApiModelProperty(value = "项目序号")
-    private Integer sorted;
+    @ApiModelProperty(value = "备注")
+    private String remark;
 }

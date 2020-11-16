@@ -1,10 +1,7 @@
 package com.mhyl.performance.appraisal.beans;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import java.io.Serializable;
 
 /**
  * <p>
@@ -15,11 +12,7 @@ import java.io.Serializable;
  * @since 2020-11-12
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
-@ApiModel(value="HospitalDoctorSaveDTO对象", description="医生")
-public class HospitalDoctorSaveDTO implements Serializable {
-
-    private static final long serialVersionUID=1L;
+public class HospitalDoctorSaveDTO {
 
     @ApiModelProperty(value = "姓名")
     private String name;

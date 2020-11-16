@@ -20,7 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,42 +38,53 @@ public class HospitalDoctorController {
     @ApiOperation("添加员工到对应科室")
     @PostMapping("/save")
     public JsonResult<String> save(@RequestBody HospitalDoctorSaveDTO dto){
-        ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getName(), "科室名称");
+        ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getName(), "医生姓名");
         ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getIdCard(), "身份证号码");
         ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getJobTitle(), "职称");
         ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getJobPost(), "职务");
         ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getDepartId(), "所在科室");
         HospitalDoctor hospitalDoctor = BeanMapper.map(dto, HospitalDoctor.class);
         //身份证号码重复提示
-        QueryWrapper<HospitalDoctor> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id_card");
-        queryWrapper.eq("id_card",dto.getIdCard());
-        List<HospitalDoctor> list = hospitalDoctorRepo.list(queryWrapper);
-        if (list.size() > 0){
-            return JsonResult.error(500,"身份证号码与已有员工重复，请更改后提交");
-        }
+        checkDoctorIdCard(dto.getIdCard());
         //重名提示
-        queryWrapper.clear();
-        queryWrapper.select("name");
-        queryWrapper.eq("name",dto.getName());
-        HospitalDoctor one = hospitalDoctorRepo.getOne(queryWrapper);
-        if (one != null){
-            return JsonResult.error(500,"重复人员名称：" + one.getName());
-        }
-        hospitalDoctor.setCreateTime(System.currentTimeMillis());
-        hospitalDoctor.setSorted(0);
-        if (dto.getJobPost().equals("无") && dto.getJobTitle().equals("无")){
-            hospitalDoctor.setSorted(3);
-        }
-        if ((!dto.getJobPost().equals("无")) && dto.getJobTitle().equals("无")){
-            hospitalDoctor.setSorted(1);
-        }
-        if (dto.getJobPost().equals("无") && (!dto.getJobTitle().equals("无"))){
-            hospitalDoctor.setSorted(2);
-        }
+        checkDoctorName(dto.getDepartId(), dto.getName());
+        setSorted(hospitalDoctor);
         hospitalDoctorRepo.save(hospitalDoctor);
         return JsonResult.success("success");
     }
+
+    private void setSorted(HospitalDoctor hospitalDoctor) {
+        if (!hospitalDoctor.getJobPost().equals("无") && !hospitalDoctor.getJobTitle().equals("无")) {
+            hospitalDoctor.setSorted(0);
+            return;
+        }
+
+        if ((!hospitalDoctor.getJobPost().equals("无"))) {
+            hospitalDoctor.setSorted(1);
+            return;
+        }
+        if (!hospitalDoctor.getJobTitle().equals("无")) {
+            hospitalDoctor.setSorted(2);
+            return;
+        }
+        hospitalDoctor.setSorted(3);
+    }
+
+    private void checkDoctorIdCard(String idCard) {
+        QueryWrapper<HospitalDoctor> wrapper = new QueryWrapper<>();
+        wrapper.eq("id_card", idCard);
+        int count = hospitalDoctorRepo.count(wrapper);
+        ThrowException.DOCTOR_NAME_DUPLICATE.ifNotEquals(count, 0);
+    }
+
+    private void checkDoctorName(Long departId, String name) {
+        QueryWrapper<HospitalDoctor> wrapper = new QueryWrapper<>();
+        wrapper.eq("depart_id", departId);
+        wrapper.eq("name", name);
+        int count = hospitalDoctorRepo.count(wrapper);
+        ThrowException.DOCTOR_DUPLICATE.ifNotEquals(count, 0, name);
+    }
+
 
     @ApiOperation("修改医生信息")
     @PostMapping("/update")
@@ -81,45 +92,22 @@ public class HospitalDoctorController {
         ThrowException.ARG_IS_EMPTY.ifEmpty(dto.getId(), "医生id");
         HospitalDoctor hospitalDoctor = BeanMapper.map(dto, HospitalDoctor.class);
         //身份证号码重复提示
-        QueryWrapper<HospitalDoctor> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id_card");
-        queryWrapper.eq("id_card",dto.getIdCard());
-        List<HospitalDoctor> list = hospitalDoctorRepo.list(queryWrapper);
-        if (list.size() > 0){
-            return JsonResult.error(500,"身份证号码与已有员工重复，请更改后提交");
-        }
+        checkDoctorIdCard(dto.getIdCard());
         //重名提示
-        queryWrapper.clear();
-        queryWrapper.select("name");
-        queryWrapper.eq("name",dto.getName());
-        HospitalDoctor one = hospitalDoctorRepo.getOne(queryWrapper);
-        if (one != null){
-            return JsonResult.error(500,"重复人员名称：" + one.getName());
-        }
-        hospitalDoctor.setCreateTime(System.currentTimeMillis());
-        hospitalDoctor.setSorted(0);
-        if (dto.getJobPost().equals("无") && dto.getJobTitle().equals("无")){
-            hospitalDoctor.setSorted(3);
-        }
-        if ((!dto.getJobPost().equals("无")) && dto.getJobTitle().equals("无")){
-            hospitalDoctor.setSorted(1);
-        }
-        if (dto.getJobPost().equals("无") && (!dto.getJobTitle().equals("无"))){
-            hospitalDoctor.setSorted(2);
-        }
+        checkDoctorName(dto.getDepartId(), dto.getName());
+        setSorted(hospitalDoctor);
         hospitalDoctorRepo.updateById(hospitalDoctor);
         return JsonResult.success("success");
     }
 
     @ApiOperation("获取当前科室医生列表")
-    @GetMapping("/getList")
-    public JsonResult<List<HospitalDoctorVO>> getList(@RequestParam  String departId){
+    @PostMapping("/list")
+    public JsonResult<List<HospitalDoctorVO>> list(@RequestParam String departId) {
         ThrowException.ARG_IS_EMPTY.ifEmpty(departId, "科室id");
         QueryWrapper<HospitalDoctor> hospitalDoctorQueryWrapper = new QueryWrapper<>();
-        hospitalDoctorQueryWrapper.select("id,name,id_card,job_title,job_post,depart_id");
         hospitalDoctorQueryWrapper.eq("depart_id",departId);
         //优先级排序
-        hospitalDoctorQueryWrapper.orderByAsc("sorted","create_time");
+        hospitalDoctorQueryWrapper.orderByAsc("sorted", "create_time");
         List<HospitalDoctor> list = hospitalDoctorRepo.list(hospitalDoctorQueryWrapper);
         List<HospitalDoctorVO> data = BeanMapper.mapList(list, HospitalDoctor.class, HospitalDoctorVO.class);
         return JsonResult.success(data);

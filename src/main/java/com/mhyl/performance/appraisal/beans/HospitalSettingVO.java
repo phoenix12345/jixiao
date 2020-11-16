@@ -1,32 +1,14 @@
-package com.mhyl.performance.appraisal.domain.entity;
+package com.mhyl.performance.appraisal.beans;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
-/**
- * <p>
- * 医院设置
- * </p>
- *
- * @author Archie Ding
- * @since 2020-11-12
- */
 @Data
-@EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "HosptialSetting对象", description = "医院设置")
-public class HosptialSetting implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class HospitalSettingVO {
 
     @ApiModelProperty(value = "主键")
-    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     @ApiModelProperty(value = "工作量系数")
@@ -46,6 +28,4 @@ public class HosptialSetting implements Serializable {
 
     @ApiModelProperty(value = "当前指导值")
     private BigDecimal guidanceValue;
-
-
 }
