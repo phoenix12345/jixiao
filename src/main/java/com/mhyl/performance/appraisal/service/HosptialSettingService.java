@@ -1,9 +1,9 @@
 package com.mhyl.performance.appraisal.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.mhyl.performance.appraisal.beans.HosptialPostCoefficientDTO;
-import com.mhyl.performance.appraisal.beans.HosptialSettingVO;
-import com.mhyl.performance.appraisal.beans.HosptialWorkEquivalentDTO;
+import com.mhyl.performance.appraisal.beans.HospitalPostCoefficientDTO;
+import com.mhyl.performance.appraisal.beans.HospitalSettingVO;
+import com.mhyl.performance.appraisal.beans.HospitalWorkEquivalentDTO;
 import com.mhyl.performance.appraisal.domain.entity.HosptialSetting;
 import com.mhyl.performance.appraisal.domain.repository.HosptialSettingRepo;
 import com.mhyl.performance.appraisal.utils.BeanMapper;
@@ -21,30 +21,30 @@ public class HosptialSettingService {
      *
      * @return
      */
-    public HosptialSettingVO getHosptialSetting() {
+    public HospitalSettingVO getHospitalSetting() {
         QueryWrapper<HosptialSetting> queryWrapper = new QueryWrapper<>();
         queryWrapper.last("limit 1");
         HosptialSetting hosptialSetting = hosptialSettingRepo.getOne(queryWrapper, false);
-        return BeanMapper.map(hosptialSetting, HosptialSettingVO.class);
+        return BeanMapper.map(hosptialSetting, HospitalSettingVO.class);
     }
 
     /**
      * 修改医院工作当量标准
      *
-     * @param hosptialWorkEquivalentDTO
+     * @param dto
      */
-    public void updateWorkEquivalent(HosptialWorkEquivalentDTO hosptialWorkEquivalentDTO) {
-        HosptialSetting hosptialSetting = BeanMapper.map(hosptialWorkEquivalentDTO, HosptialSetting.class);
+    public void updateWorkEquivalent(HospitalWorkEquivalentDTO dto) {
+        HosptialSetting hosptialSetting = BeanMapper.map(dto, HosptialSetting.class);
         hosptialSettingRepo.updateById(hosptialSetting);
     }
 
     /**
      * 修改医院医疗费率、当量指导值
      *
-     * @param hosptialPostCoefficientDTO
+     * @param dto
      */
-    public void updatePostCoefficient(HosptialPostCoefficientDTO hosptialPostCoefficientDTO) {
-        HosptialSetting hosptialSetting = BeanMapper.map(hosptialPostCoefficientDTO, HosptialSetting.class);
+    public void updatePostCoefficient(HospitalPostCoefficientDTO dto) {
+        HosptialSetting hosptialSetting = BeanMapper.map(dto, HosptialSetting.class);
         hosptialSettingRepo.updateById(hosptialSetting);
     }
 }

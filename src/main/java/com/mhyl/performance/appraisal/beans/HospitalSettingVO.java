@@ -1,12 +1,12 @@
 package com.mhyl.performance.appraisal.beans;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
-public class HosptialWorkEquivalentDTO {
+public class HospitalSettingVO {
 
     @ApiModelProperty(value = "主键")
     private Long id;
@@ -22,4 +22,10 @@ public class HosptialWorkEquivalentDTO {
 
     @ApiModelProperty(value = "工作风险系数")
     private Integer jobRiskPercent;
+
+    @ApiModelProperty(value = "医疗费率")
+    private BigDecimal medicalRate;
+
+    @ApiModelProperty(value = "当前指导值")
+    private BigDecimal guidanceValue;
 }

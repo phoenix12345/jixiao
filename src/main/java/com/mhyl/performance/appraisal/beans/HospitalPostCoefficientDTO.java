@@ -6,7 +6,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class HosptialPostCoefficientDTO {
+public class HospitalPostCoefficientDTO {
 
     @ApiModelProperty(value = "主键")
     private Long id;
