@@ -3,7 +3,6 @@ package com.mhyl.performance.appraisal.beans;
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
 import java.math.BigDecimal;
 
 /**

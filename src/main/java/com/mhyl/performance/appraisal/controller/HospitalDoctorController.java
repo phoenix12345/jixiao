@@ -123,40 +123,17 @@ public class HospitalDoctorController {
         params.setHeadRows(1);
         List<HospitalDoctorExcel> result = ExcelImportUtil.importExcel(multipartFile.getInputStream(),HospitalDoctorExcel.class, params);
         List<HospitalDoctor> hospitalDoctorList = new ArrayList<>();
-        QueryWrapper<HospitalDepart> queryWrapper = new QueryWrapper<>();
         //得到excel表格中所在科室字段
         for (HospitalDoctorExcel hospitalDoctorExcel : result) {
             ThrowException.ARG_IS_EMPTY.ifEmpty(hospitalDoctorExcel.getDepartId(), "所在科室");
             ThrowException.ARG_IS_EMPTY.ifEmpty(hospitalDoctorExcel.getIdCard(), "身份证号码");
             ThrowException.ARG_IS_EMPTY.ifEmpty(hospitalDoctorExcel.getName(), "姓名");
-            HospitalDoctor hospitalDoctor = new HospitalDoctor();
             //检查填写科室是否存在
-            queryWrapper.select("id");
-            queryWrapper.eq("name",hospitalDoctorExcel.getDepartId());
-            HospitalDepart one = hospitalDepartRepo.getOne(queryWrapper);
-            if (one == null){
-                return JsonResult.error(500,"系统检测到您提交的表格模板中出现重名情况，系统建议在其名称后面添加数字，具体内容如下表所示，点击确认将此名称录入系统");
-            }else {
-                hospitalDoctor.setDepartId(one.getId());
-            }
-            hospitalDoctor.setCreateTime(System.currentTimeMillis());
-            hospitalDoctor.setSorted(0);
-            if (hospitalDoctorExcel.getJobPost().equals("无") && hospitalDoctorExcel.getJobTitle().equals("无")){
-                hospitalDoctor.setSorted(3);
-            }
-            if ((!hospitalDoctorExcel.getJobPost().equals("无")) && hospitalDoctorExcel.getJobTitle().equals("无")){
-                hospitalDoctor.setSorted(1);
-            }
-            if (hospitalDoctorExcel.getJobPost().equals("无") && (!hospitalDoctorExcel.getJobTitle().equals("无"))){
-                hospitalDoctor.setSorted(2);
-            }
-            hospitalDoctor.setIdCard(hospitalDoctorExcel.getIdCard());
-            hospitalDoctor.setDepartRate(hospitalDoctorExcel.getDepartRate());
-            hospitalDoctor.setJobPost(hospitalDoctorExcel.getJobPost());
-            hospitalDoctor.setJobPostRate(hospitalDoctorExcel.getJobPostRate());
-            hospitalDoctor.setJobTitle(hospitalDoctorExcel.getJobTitle());
-            hospitalDoctor.setName(hospitalDoctorExcel.getName());
-            hospitalDoctor.setRemark(hospitalDoctorExcel.getRemark());
+            HospitalDoctor hospitalDoctor = checkDepartAndSetDoctor(hospitalDoctorExcel);
+            //检查录入人员所在科室是否有重名
+            checkDuplicate(hospitalDoctor);
+            //检查是否有身份证号码重复的情况
+            checkDoctorIdCard(hospitalDoctor.getIdCard());
             hospitalDoctorList.add(hospitalDoctor);
         }
         //将excel中数据插入数据库
@@ -166,4 +143,31 @@ public class HospitalDoctorController {
         return JsonResult.success("批量导入成功");
     }
 
+    private HospitalDoctor checkDepartAndSetDoctor(HospitalDoctorExcel hospitalDoctorExcel){
+        HospitalDoctor hospitalDoctor = new HospitalDoctor();
+        QueryWrapper<HospitalDepart> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id");
+        queryWrapper.eq("name",hospitalDoctorExcel.getDepartId());
+        HospitalDepart one = hospitalDepartRepo.getOne(queryWrapper);
+        ThrowException.DEPART_NOT_EXIST.ifEmpty(one);
+        hospitalDoctor.setDepartId(one.getId());
+        hospitalDoctor.setCreateTime(System.currentTimeMillis());
+        hospitalDoctor.setIdCard(hospitalDoctorExcel.getIdCard());
+        hospitalDoctor.setDepartRate(hospitalDoctorExcel.getDepartRate());
+        hospitalDoctor.setJobPost(hospitalDoctorExcel.getJobPost());
+        hospitalDoctor.setJobPostRate(hospitalDoctorExcel.getJobPostRate());
+        hospitalDoctor.setJobTitle(hospitalDoctorExcel.getJobTitle());
+        hospitalDoctor.setName(hospitalDoctorExcel.getName());
+        hospitalDoctor.setRemark(hospitalDoctorExcel.getRemark());
+        setSorted(hospitalDoctor);
+        return hospitalDoctor;
+    }
+
+    private void checkDuplicate(HospitalDoctor hospitalDoctor){
+        QueryWrapper<HospitalDoctor> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("name");
+        queryWrapper.eq("depart_id",hospitalDoctor.getDepartId()).eq("name",hospitalDoctor.getName());
+        int count = hospitalDoctorRepo.count(queryWrapper);
+        ThrowException.DEPART_DUPLICATE_NAME.ifNotEquals(count, 0);
+    }
 }

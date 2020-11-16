@@ -66,6 +66,14 @@ public enum ThrowException implements ServiceExceptionAssert {
 	 * 身份证号码与已有员工重复，请更改后提交
 	 */
 	DOCTOR_NAME_DUPLICATE(606, "身份证号码与已有员工重复，请更改后提交"),
+	/**
+	 *  科室不存在，请更改后提交
+	 */
+	DEPART_NOT_EXIST(607, "科室不存在，请更改后提交"),
+	/**
+	 *  科室不存在，请更改后提交
+	 */
+	DEPART_DUPLICATE_NAME(608, "该科室下有重名员工，请更改后提交"),
 	;
 	/**
 	 * 返回码
