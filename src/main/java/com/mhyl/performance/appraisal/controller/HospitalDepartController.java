@@ -69,14 +69,14 @@ public class HospitalDepartController {
     }
 
     @ApiOperation("删除科室")
-    @GetMapping("/delete")
-    public JsonResult delete(@RequestParam String id) {
+    @PostMapping("/delete")
+    public JsonResult delete(@RequestBody HospitalDepartVO hospitalDepartVO) {
         //删除该科室内的所有员工
         QueryWrapper<HospitalDoctor> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("depart_id", id);
+        queryWrapper.eq("depart_id", hospitalDepartVO.getId());
         hospitalDoctorRepo.remove(queryWrapper);
         //删除科室
-        hospitalDepartRepo.removeById(id);
+        hospitalDepartRepo.removeById(hospitalDepartVO.getId());
         return JsonResult.success();
     }
 
