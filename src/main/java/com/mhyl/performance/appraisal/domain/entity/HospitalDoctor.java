@@ -57,11 +57,11 @@ public class HospitalDoctor implements Serializable {
 
     @ApiModelProperty(value = "创建时间")
       @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    private Long createTime;
 
     @ApiModelProperty(value = "修改时间")
       @TableField(fill = FieldFill.UPDATE)
-    private LocalDateTime updateTime;
+    private Long updateTime;
 
     @ApiModelProperty(value = "0: 职务+职称 1:职务 2:职称 3:无")
     private Integer sorted;

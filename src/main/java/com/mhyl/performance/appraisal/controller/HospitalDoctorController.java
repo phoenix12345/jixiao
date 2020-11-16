@@ -3,12 +3,12 @@ package com.mhyl.performance.appraisal.controller;
 
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mhyl.performance.appraisal.beans.HospitalDoctorDTO;
 import com.mhyl.performance.appraisal.beans.HospitalDoctorExcel;
 import com.mhyl.performance.appraisal.beans.HospitalDoctorSaveDTO;
 import com.mhyl.performance.appraisal.beans.HospitalDoctorVO;
+import com.mhyl.performance.appraisal.domain.entity.HospitalDepart;
 import com.mhyl.performance.appraisal.domain.entity.HospitalDoctor;
 import com.mhyl.performance.appraisal.domain.repository.HospitalDepartRepo;
 import com.mhyl.performance.appraisal.domain.repository.HospitalDoctorRepo;
@@ -60,7 +60,7 @@ public class HospitalDoctorController {
         if (one != null){
             return JsonResult.error(500,"重复人员名称：" + one.getName());
         }
-        hospitalDoctor.setCreateTime(LocalDateTime.now());
+        hospitalDoctor.setCreateTime(System.currentTimeMillis());
         hospitalDoctor.setSorted(0);
         if (dto.getJobPost().equals("无") && dto.getJobTitle().equals("无")){
             hospitalDoctor.setSorted(3);
@@ -96,7 +96,7 @@ public class HospitalDoctorController {
         if (one != null){
             return JsonResult.error(500,"重复人员名称：" + one.getName());
         }
-        hospitalDoctor.setCreateTime(LocalDateTime.now());
+        hospitalDoctor.setCreateTime(System.currentTimeMillis());
         hospitalDoctor.setSorted(0);
         if (dto.getJobPost().equals("无") && dto.getJobTitle().equals("无")){
             hospitalDoctor.setSorted(3);
@@ -134,39 +134,47 @@ public class HospitalDoctorController {
         //excel有一个表头
         params.setHeadRows(1);
         List<HospitalDoctorExcel> result = ExcelImportUtil.importExcel(multipartFile.getInputStream(),HospitalDoctorExcel.class, params);
+        List<HospitalDoctor> hospitalDoctorList = new ArrayList<>();
+        QueryWrapper<HospitalDepart> queryWrapper = new QueryWrapper<>();
         //得到excel表格中所在科室字段
         for (HospitalDoctorExcel hospitalDoctorExcel : result) {
-            hospitalDoctorExcel.setCreateTime(LocalDateTime.now());
             ThrowException.ARG_IS_EMPTY.ifEmpty(hospitalDoctorExcel.getDepartId(), "所在科室");
             ThrowException.ARG_IS_EMPTY.ifEmpty(hospitalDoctorExcel.getIdCard(), "身份证号码");
             ThrowException.ARG_IS_EMPTY.ifEmpty(hospitalDoctorExcel.getName(), "姓名");
-            hospitalDoctorExcel.setSorted(0);
+            HospitalDoctor hospitalDoctor = new HospitalDoctor();
+            //检查填写科室是否存在
+            queryWrapper.select("id");
+            queryWrapper.eq("name",hospitalDoctorExcel.getDepartId());
+            HospitalDepart one = hospitalDepartRepo.getOne(queryWrapper);
+            if (one == null){
+                return JsonResult.error(500,"系统检测到您提交的表格模板中出现重名情况，系统建议在其名称后面添加数字，具体内容如下表所示，点击确认将此名称录入系统");
+            }else {
+                hospitalDoctor.setDepartId(one.getId());
+            }
+            hospitalDoctor.setCreateTime(System.currentTimeMillis());
+            hospitalDoctor.setSorted(0);
             if (hospitalDoctorExcel.getJobPost().equals("无") && hospitalDoctorExcel.getJobTitle().equals("无")){
-                hospitalDoctorExcel.setSorted(3);
+                hospitalDoctor.setSorted(3);
             }
             if ((!hospitalDoctorExcel.getJobPost().equals("无")) && hospitalDoctorExcel.getJobTitle().equals("无")){
-                hospitalDoctorExcel.setSorted(1);
+                hospitalDoctor.setSorted(1);
             }
             if (hospitalDoctorExcel.getJobPost().equals("无") && (!hospitalDoctorExcel.getJobTitle().equals("无"))){
-                hospitalDoctorExcel.setSorted(2);
+                hospitalDoctor.setSorted(2);
             }
+            hospitalDoctor.setIdCard(hospitalDoctorExcel.getIdCard());
+            hospitalDoctor.setDepartRate(hospitalDoctorExcel.getDepartRate());
+            hospitalDoctor.setJobPost(hospitalDoctorExcel.getJobPost());
+            hospitalDoctor.setJobPostRate(hospitalDoctorExcel.getJobPostRate());
+            hospitalDoctor.setJobTitle(hospitalDoctorExcel.getJobTitle());
+            hospitalDoctor.setName(hospitalDoctorExcel.getName());
+            hospitalDoctor.setRemark(hospitalDoctorExcel.getRemark());
+            hospitalDoctorList.add(hospitalDoctor);
         }
-        //检测填写的科室是否存在
-//        QueryWrapper<HospitalDepart> queryWrapper = new QueryWrapper<>();
-//        for (String s : departIdList) {
-//            queryWrapper.select("id,name");
-//            queryWrapper.eq("name", s);
-//            HospitalDepart departName = hospitalDepartRepo.getOne(queryWrapper);
-//            if (departName == null){
-//                return JsonResult.error(500,"所在科室不存在");
-//            }
-//        }
-//        List<HospitalDoctor> hospitalDoctors = BeanMapper.mapList(result, HospitalDoctorExcel.class, HospitalDoctor.class);
         //将excel中数据插入数据库
         Collection collections = new ArrayList<>();
-        collections.addAll(result);
+        collections.addAll(hospitalDoctorList);
         hospitalDoctorRepo.saveBatch(collections);
-        System.out.println(JSONUtil.toJsonStr(result));
         return JsonResult.success("批量导入成功");
     }
 

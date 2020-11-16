@@ -50,7 +50,7 @@ public class HospitalDoctorExcel implements Serializable {
 
     @Excel(name = "*所在科室")
     @ApiModelProperty(value = "所在科室")
-    private Long departId;
+    private String departId;
 
     @Excel(name = "备注")
     @ApiModelProperty(value = "备注")

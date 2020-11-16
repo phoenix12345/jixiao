@@ -50,11 +50,11 @@ public class SystemUser implements Serializable {
 
     @ApiModelProperty(value = "创建时间")
       @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    private Long createTime;
 
     @ApiModelProperty(value = "修改时间")
       @TableField(fill = FieldFill.UPDATE)
-    private LocalDateTime updateTime;
+    private Long updateTime;
 
 
 }
