@@ -2,4 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mhyl.performance.appraisal.domain.mapper.ServiceProjectMapper">
 
+    <select id="selectByAppraisalIds" resultType="com.mhyl.performance.appraisal.beans.WorkEquivalentVO">
+         SELECT
+            ap.`name` appraisalProjectName,
+            ap.sorted,
+            sp.`name` serviceProjectName,
+            sp.unit unit,
+            sp.job_content jobContent,
+            sp.technical_content technicalContent,
+            sp.technical_difficulty technicalDifficulty,
+            sp.job_risk jobRisk,
+            sp.unit_equivalent unitEquivalent,
+            sp.remark
+        FROM
+            service_project sp
+            LEFT JOIN appraisal_project ap ON sp.appraisal_id = ap.id
+        WHERE
+            sp.appraisal_id IN
+        <foreach item="item" index="index" collection="ids" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        ORDER BY
+        sp.appraisal_id,
+        ap.sorted
+    </select>
 </mapper>

@@ -1,7 +1,11 @@
 package com.mhyl.performance.appraisal.domain.mapper;
 
+import com.mhyl.performance.appraisal.beans.WorkEquivalentVO;
 import com.mhyl.performance.appraisal.domain.entity.ServiceProject;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface ServiceProjectMapper extends BaseMapper<ServiceProject> {
 
+    List<WorkEquivalentVO> selectByAppraisalIds(@Param("ids") List<Integer> ids);
 }
